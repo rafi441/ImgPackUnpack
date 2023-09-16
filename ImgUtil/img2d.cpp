@@ -13,9 +13,11 @@ BOOL IMAGE2D::Decompress(DWORD tCompressSize, BYTE* tCompress, DWORD tOriginalSi
 	return TRUE;
 }
 
-void IMAGE2D::Unpack(char* tFileName)
+void IMAGE2D::Unpack(std::string tFileName)
 {
-    HANDLE hFile = CreateFileA(tFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    printf("%s\n", tFileName.c_str());
+
+    HANDLE hFile = CreateFileA(tFileName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
     {
         Free();
@@ -70,13 +72,21 @@ void IMAGE2D::Unpack(char* tFileName)
 
     uIMG2D = (IMAGE_FOR_UNCOMPRESS*)tOriginal;
 
-    HANDLE hOutputFile = CreateFile("blabla.DDS", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+    auto size = tFileName.find(".IMG");
+    if (size != std::string::npos)
+    {
+        tFileName.erase(size, 4);
+    }
+    char tOutputName[1000];
+    sprintf(tOutputName, "../DDS/%s.DDS", tFileName.c_str());
+
+    HANDLE hOutputFile = CreateFile(tOutputName, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hOutputFile != INVALID_HANDLE_VALUE)
     {
         DWORD bytesWritten;
         WriteFile(hOutputFile, &uIMG2D->mTexture, uIMG2D->mTextureSize, &bytesWritten, NULL);
         CloseHandle(hOutputFile);
-        printf("Texture saved to blabla.DDS\n");
+        printf("Texture saved\n");
     }
     else
     {

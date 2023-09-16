@@ -26,7 +26,7 @@ public:
 	BOOL mCheckValidState;
 	IMAGE_FOR_UNCOMPRESS* uIMG2D;
 	BOOL Decompress(DWORD tCompressSize, BYTE* tCompress, DWORD tOriginalSize, BYTE* tOriginal);
-	void Unpack(char* tFileName);
+	void Unpack(std::string tFileName);
 	void Free(void);
 };
 extern IMAGE2D pImg;
